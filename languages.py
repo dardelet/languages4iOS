@@ -173,6 +173,7 @@ class ImportCsv:
     def writeFile(self, language):
         folderName = "yoobiquity/" + language + ".lproj"
         fileName = "Localizable.strings"
+        tmpName = "/tmp/localizable"
         timeInMilliseconds = int(round(time.time() * 1000))
         try:
             os.chdir(folderName)
@@ -185,13 +186,39 @@ class ImportCsv:
         except OSError:
             print "Couldn't find Localizable.strings. No such file."
             quit()
-        f = open(fileName, "w")
+        f = open(tmpName, "w+")
+        g = open(fileName, "w+")
         for key in self.sortedKeys:
             line = '"' + key + '" = "' + self.dico[key][language] + '";\n'
             line = line.encode("utf8")
             f.write(line)
+        self.formatFile(f, g)
         f.close()
+        g.close()
+        os.remove(tmpName)
         os.chdir("../..")
+
+    def formatFile(self, fileIn, fileOut):
+        fileIn.seek(0)
+        line = fileIn.readline()
+        prefix1 = self.getPrefix(line)
+        fileOut.write(line)
+        for line in fileIn:
+            prefix2 = self.getPrefix(line)
+            if prefix1 != prefix2:
+                fileOut.write("\n")
+            prefix1 = prefix2
+            fileOut.write(line)
+
+
+    def getPrefix(self, line):
+        try:
+            m = re.search('"(.+?)[_"]', line)
+            prefix = m.group(1)
+        except AttributeError:
+            print 'Prefix error'
+            quit()
+        return prefix
 
     def getStringFiles(self):
         self.getDicoFromFile()
