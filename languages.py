@@ -226,7 +226,7 @@ class ImportCsv:
                 
 
 if len(sys.argv) != 2:
-    print "Usage: ./languages.py [import|export]"
+    print "Usage: ./languages.py [import|export|update]"
 else:
     if sys.argv[1] == "export":
         print "Creating csv file..."
@@ -235,6 +235,14 @@ else:
         print "Done. Check 'languages.csv'"
     elif sys.argv[1] == "import":
         print "Loading languages.csv file into String files..."
+        importCommand = ImportCsv()
+        importCommand.getStringFiles()
+        print "Done"
+    elif sys.argv[1] == "update":
+        print "Loading new keys of Base file into the other language files"
+        exportCommand = ExportStringFile()
+        exportCommand.getCsv()
+        os.chdir("..")
         importCommand = ImportCsv()
         importCommand.getStringFiles()
         print "Done"
