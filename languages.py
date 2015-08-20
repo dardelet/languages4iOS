@@ -43,7 +43,7 @@ class ExportStringFile:
     def getDictionnaryFromStringFile(self, filename):
         f = open(filename)
         language = re.search("(.*)\.lproj/.*", filename).group(1)
-        language = "fr" if language == "Base" else language
+        language = "en" if language == "Base" else language
         self.languages.append(language)
         dico = {}
         for line in f:
@@ -159,7 +159,7 @@ class ImportCsv:
         for line in f:    
             array = self.parseLineIntoArray(line)
             if firstLine:
-                self.languages = [unicode("Base") if i == "fr" else i for i in array[1:]]
+                self.languages = [unicode("Base") if i == "en" else i for i in array[1:]]
                 self.sortedKeys = self.sortedKeys[1:]
                 firstLine = False
             else:
